@@ -4,7 +4,7 @@
 export const CENTRAL_IMAGE =
   "https://media.base44.com/images/public/6ad6dfe75ae5eedefbd62633/cf08f27bd_generated_image.png";
 
-export const PROJECT_WORD = "Illustrate";
+export const PROJECT_WORD = "to illustrate";
 
 export const gifts = [
   {

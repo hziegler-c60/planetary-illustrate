@@ -1,12 +1,14 @@
 import { useEffect, useRef } from "react";
 import { Image } from "@/components/ui/image";
-import { BRUSH, BRUSH_TIP, CANVAS, PAINT, PALETTE } from "@/data/creativity";
+import { BRUSH, BRUSH_TIP, CANVAS, PAINT, PALETTE, WELLS } from "@/data/creativity";
 
 // The creativity plate: the easel with its half-finished study, and the artist's
-// tools resting on the stool beside it. Here the cursor becomes the brush, and it
-// lays paint on the sheet of the easel and in the wells of the palette — all of it
-// in the one colour the brush itself is drawn in. The paint belongs to whichever
-// of the two the brush is standing in: leave it, and the paint dries off.
+// tools resting on the stool beside it. Here the cursor becomes the brush.
+// Passing the brush over a dab on the palette loads it with that dab's colour —
+// a spot of the colour rides beside the bristles so you can see what it carries —
+// and the loaded colour is what it lays on the sheet of the easel. Dab the brush
+// back in the wells and it leaves a little paint there too. Leave the plate, and
+// the paint dries off.
 const SPACING = 3; // px between dabs
 const SHEET_DAB = 0.014; // dab radius on the sheet, of the plate's width
 const WELLS_DAB = 0.009; // dab radius in the palette's wells
@@ -17,11 +19,18 @@ export default function CreativitySpecimen({ plate, alt }) {
   const sheetRef = useRef(null);
   const wellsRef = useRef(null);
   const brushRef = useRef(null);
+  const dotRef = useRef(null);
   const lastRef = useRef(null);
   const regionRef = useRef(null);
   const timersRef = useRef({});
+  const colorRef = useRef(PAINT);
 
   const layerOf = (region) => (region === "sheet" ? sheetRef.current : wellsRef.current);
+
+  const setColor = (color) => {
+    colorRef.current = color;
+    if (dotRef.current) dotRef.current.style.backgroundColor = color;
+  };
 
   useEffect(() => {
     const box = boxRef.current;
@@ -84,6 +93,10 @@ export default function CreativitySpecimen({ plate, alt }) {
       brushRef.current.style.transform = `translate(${x}px, ${y}px)`;
       brushRef.current.style.opacity = "1";
     }
+    if (dotRef.current) {
+      dotRef.current.style.transform = `translate(${x + 12}px, ${y - 22}px)`;
+      dotRef.current.style.opacity = "1";
+    }
 
     const u = x / rect.width;
     const v = y / rect.height;
@@ -92,6 +105,20 @@ export default function CreativitySpecimen({ plate, alt }) {
     const dy = (v - PALETTE[1]) / PALETTE[3];
     const inWells = !onSheet && dx * dx + dy * dy <= 1;
     const region = onSheet ? "sheet" : inWells ? "wells" : null;
+
+    // dipping into the palette loads the brush with the nearest dab's colour
+    if (inWells) {
+      let best = null;
+      let bestDist = Infinity;
+      for (const well of WELLS) {
+        const d = (u - well.at[0]) ** 2 + (v - well.at[1]) ** 2;
+        if (d < bestDist) {
+          bestDist = d;
+          best = well;
+        }
+      }
+      if (best && best.color !== colorRef.current) setColor(best.color);
+    }
 
     if (regionRef.current !== region) {
       const left = regionRef.current;
@@ -107,8 +134,8 @@ export default function CreativitySpecimen({ plate, alt }) {
     lastRef.current = { x, y };
 
     const ctx = layerOf(region).getContext("2d");
-    ctx.globalAlpha = 0.4;
-    ctx.fillStyle = PAINT;
+    ctx.globalAlpha = onSheet ? 0.55 : 0.45;
+    ctx.fillStyle = colorRef.current;
     ctx.beginPath();
     ctx.arc(x, y, rect.width * (onSheet ? SHEET_DAB : WELLS_DAB), 0, Math.PI * 2);
     ctx.fill();
@@ -117,6 +144,7 @@ export default function CreativitySpecimen({ plate, alt }) {
 
   const leavePlate = () => {
     if (brushRef.current) brushRef.current.style.opacity = "0";
+    if (dotRef.current) dotRef.current.style.opacity = "0";
     const left = regionRef.current;
     regionRef.current = null;
     lastRef.current = null;
@@ -129,6 +157,7 @@ export default function CreativitySpecimen({ plate, alt }) {
       onPointerMove={handleMove}
       onPointerEnter={() => {
         if (brushRef.current) brushRef.current.style.opacity = "1";
+        if (dotRef.current) dotRef.current.style.opacity = "1";
       }}
       onPointerLeave={leavePlate}
       data-brush-cursor="true"
@@ -159,6 +188,13 @@ export default function CreativitySpecimen({ plate, alt }) {
           style={{ transform: `translate(${-BRUSH_TIP[0] * 100}%, ${-BRUSH_TIP[1] * 100}%)` }}
         />
       </div>
+      {/* the spot of colour the brush is carrying */}
+      <div
+        ref={dotRef}
+        aria-hidden="true"
+        className="pointer-events-none absolute left-0 top-0 h-3 w-3 rounded-full ring-1 ring-[#3d2c17]/60"
+        style={{ opacity: 0, backgroundColor: PAINT, willChange: "transform" }}
+      />
     </div>
   );
 }

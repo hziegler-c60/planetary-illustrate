@@ -15,6 +15,30 @@ const LABELS = [
   { x: 34, y: 49 }, // Organization — left
 ];
 
+// Dictionary entry for the word, and a short note on why it is a planetary
+// responsibility (placeholder text, to be replaced by the author).
+function Definition() {
+  return (
+    <div className="mx-auto mt-8 max-w-md text-center">
+      <p className="font-[var(--font-label)] text-[16px] tracking-wide text-[#2D2D2D]">
+        il·lus·trate{" "}
+        <span className="font-[var(--font-body)] text-[12px] text-[#8B4513]/80">/ɪˈlʌs.treɪt/</span>{" "}
+        <span className="font-[var(--font-body)] text-[12px] italic text-[#5a5148]">verb</span>
+      </p>
+      <p className="mt-2 font-[var(--font-body)] text-[13px] leading-relaxed text-[#5a5148]">
+        1. to throw light upon; to make clear by example. 2. to furnish with pictures;
+        to adorn with figures. — from Latin <span className="italic">illustrare</span>, “to light up.”
+      </p>
+      <div className="mx-auto my-4 h-px w-16 bg-[#8B4513]/40" />
+      <p className="font-[var(--font-body)] text-[13px] italic leading-relaxed text-[#5a5148]/90">
+        And why it is a planetary responsibility: of all the ways a person can tend the
+        small plot of world entrusted to them, this is the one kept here — to look closely
+        at what is, and to hand it back as something others can see, too.
+      </p>
+    </div>
+  );
+}
+
 export default function Home() {
   const navigate = useNavigate();
 
@@ -68,6 +92,8 @@ export default function Home() {
         <p className="mx-auto mt-2 max-w-md text-center font-[var(--font-body)] text-[12px] italic leading-relaxed text-[#5a5148]/80">
           Select a faculty to examine its specimen, the vocations it serves, and the daily practices by which it is strengthened.
         </p>
+
+        <Definition />
       </div>
 
       {/* Mobile — stacked list */}
@@ -105,6 +131,8 @@ export default function Home() {
         <p className="mx-auto mt-4 max-w-md text-center font-[var(--font-body)] text-[12px] italic leading-relaxed text-[#5a5148]/80">
           Select a faculty to examine its specimen, the vocations it serves, and the daily practices by which it is strengthened.
         </p>
+
+        <Definition />
       </div>
     </div>
   );

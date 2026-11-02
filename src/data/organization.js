@@ -1,19 +1,42 @@
-// Measured from the organisation plate itself: the open drawer's inside, and the
-// lines that cross it — the card edges standing in the drawer. Each file is the
-// band of the plate between two neighbouring lines.
-export const DRAWER = { xFrom: 0.24, xTo: 0.665 };
+// Measured from the catalogue plate itself: the open drawer's front edge, and the
+// top edge of every card standing in the drawer — each card a line stepping
+// down-right toward the viewer, just as drawn.
 
-// For each file: the y of its top and bottom edge at the drawer's left and right
-// ends, so a band can follow lines that are not level.
-export const FILES = [
-  { top: [0.303, 0.263], bottom: [0.317, 0.279] },
-  { top: [0.317, 0.279], bottom: [0.338, 0.295] },
-  { top: [0.338, 0.295], bottom: [0.35, 0.308] },
-  { top: [0.35, 0.308], bottom: [0.363, 0.333] },
-  { top: [0.363, 0.333], bottom: [0.368, 0.372] },
-  { top: [0.368, 0.372], bottom: [0.397, 0.385] },
+// the top edge of the drawer's front panel: [left], [right] — anything below this
+// line is inside the drawer, hidden behind its wooden face
+export const FRONT = [
+  [0.371, 0.457],
+  [0.76, 0.525],
 ];
 
-// how far a file's top edge travels out of the drawer, in plate pixels
-export const LIFT = 40;
-export const MAX_STRETCH = 6;
+// each card's top edge: [left end], [right end], back card first
+export const CARDS = [
+  [
+    [0.408, 0.432],
+    [0.518, 0.422],
+  ],
+  [
+    [0.428, 0.443],
+    [0.552, 0.434],
+  ],
+  [
+    [0.447, 0.455],
+    [0.586, 0.445],
+  ],
+  [
+    [0.467, 0.466],
+    [0.62, 0.457],
+  ],
+  [
+    [0.487, 0.474],
+    [0.654, 0.467],
+  ],
+  [
+    [0.503, 0.481],
+    [0.693, 0.477],
+  ],
+];
+
+// how far a card travels up out of the drawer when the cursor takes it, as a
+// fraction of the plate's width
+export const PULL = 0.15;

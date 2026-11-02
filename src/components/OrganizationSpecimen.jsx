@@ -1,51 +1,93 @@
 import { useState } from "react";
 import { Image } from "@/components/ui/image";
-import { DRAWER, FILES, LIFT, MAX_STRETCH } from "@/data/organization";
+import { CARDS, FRONT, PULL } from "@/data/organization";
 
-// The plate is square, so a fraction of its width is the same fraction of its height.
-const PLATE = 1024;
+// The organisation plate: the open card-catalogue drawer, kept exactly as drawn.
+// Passing the cursor through the cards pulls each one up out of the drawer — the
+// card rises as if a hand were drawing it out, and the drawer's wooden front cuts
+// it off at the same line that hides it in the drawing. Leave it, and it slides
+// back into place.
 
-// The organisation plate: the open drawer, kept exactly as drawn. Each file in it
-// is one band of the plate, cut out along the drawing's own lines, so passing the
-// cursor over a file lifts that one alone — its own pixels stretched upward out of
-// the drawer, as if a hand were drawing it up to be taken out.
+// y of the drawer front's top edge at a given x (the line that hides the cards)
+const frontY = (x) =>
+  FRONT[0][1] + ((x - FRONT[0][0]) * (FRONT[1][1] - FRONT[0][1])) / (FRONT[1][0] - FRONT[0][0]);
+
+// the region above that line, extended to the plate's edges — the only place a
+// pulled card may show
+const VISIBLE = `polygon(0% 0%, 100% 0%, 100% ${frontY(1) * 100}%, 0% ${frontY(0) * 100}%)`;
+
+const pct = (pts) => pts.map(([x, y]) => `${x * 100}% ${y * 100}%`).join(", ");
+
 export default function OrganizationSpecimen({ plate, alt }) {
   const [lifted, setLifted] = useState(null);
-  const { xFrom, xTo } = DRAWER;
+
+  // each card: a paper quad from its drawn top edge, running down into the drawer
+  const cards = CARDS.map(([tl, tr], i) => {
+    const d = [tr[0] - tl[0], tr[1] - tl[1]];
+    // the card's sides run perpendicular to its top edge, down into the drawer
+    let n = [-d[1], d[0]];
+    if (n[1] < 0) n = [-n[0], -n[1]];
+    const len = Math.hypot(n[0], n[1]);
+    n = [n[0] / len, n[1] / len];
+    const depth = 0.34;
+    const bl = [tl[0] + n[0] * depth, tl[1] + n[1] * depth];
+    const br = [tr[0] + n[0] * depth, tr[1] + n[1] * depth];
+
+    // at rest the card sits low enough that the drawer's front hides it entirely;
+    // taken, it rises by PULL out of the drawer
+    const rest = frontY(tl[0]) - tl[1] + 0.012;
+    const shift = lifted === i ? rest - PULL : rest;
+
+    // its hover band runs from its own top edge to the next card's (or, for the
+    // front card, down to the drawer's front edge)
+    const next = CARDS[i + 1];
+    const zone = next
+      ? [tl, tr, next[1], next[0]]
+      : [tl, tr, [tr[0], frontY(tr[0]) + 0.004], [tl[0], frontY(tl[0]) + 0.004]];
+
+    return { quad: [tl, tr, br, bl], zone, shift };
+  });
 
   return (
     <div className="relative w-full">
       <Image src={plate} alt={alt} fittingType="fit" className="h-auto w-full" />
-      {FILES.map((file, i) => {
-        const { top, bottom } = file;
-        const height = Math.max(3, ((bottom[0] + bottom[1]) / 2 - (top[0] + top[1]) / 2) * PLATE);
-        const stretch = Math.min(MAX_STRETCH, 1 + LIFT / height);
-        // while a file grows, its lower edge has to stay sitting on the line it
-        // rose from — so the stretch is paired with a shear that cancels the
-        // slope of that line
-        const slope = (bottom[1] - bottom[0]) / (xTo - xFrom);
-        const shear = (Math.atan(slope * (1 - stretch)) * 180) / Math.PI;
 
-        return (
+      {/* the cards — only visible above the drawer front's line */}
+      <div className="absolute inset-0" style={{ clipPath: VISIBLE }}>
+        {cards.map((card, i) => (
           <div
             key={i}
             aria-hidden="true"
-            onMouseEnter={() => setLifted(i)}
-            onMouseLeave={() => setLifted((current) => (current === i ? null : current))}
-            className="absolute inset-0 transition-transform duration-300 ease-out"
+            className="pointer-events-none absolute inset-0 transition-transform duration-300 ease-out"
             style={{
-              backgroundImage: `url(${plate})`,
-              backgroundSize: "100% 100%",
-              clipPath: `polygon(${xFrom * 100}% ${top[0] * 100}%, ${xTo * 100}% ${top[1] * 100}%, ${
-                xTo * 100
-              }% ${bottom[1] * 100}%, ${xFrom * 100}% ${bottom[0] * 100}%)`,
-              transformOrigin: `50% ${((bottom[0] + bottom[1]) / 2) * 100}%`,
-              transform: lifted === i ? `skewY(${shear}deg) scaleY(${stretch})` : "none",
+              transform: `translateY(${card.shift * 100}%)`,
               zIndex: i + 1,
+              filter: lifted === i ? "drop-shadow(0 -4px 8px rgba(40,25,10,0.45))" : "none",
             }}
-          />
-        );
-      })}
+          >
+            <div
+              className="absolute inset-0"
+              style={{
+                clipPath: `polygon(${pct(card.quad)})`,
+                background:
+                  "linear-gradient(180deg, rgba(90,65,35,0.4) 0%, rgba(90,65,35,0) 4%), repeating-linear-gradient(180deg, rgba(120,90,55,0.14) 0px, rgba(120,90,55,0.14) 1px, rgba(0,0,0,0) 1px, rgba(0,0,0,0) 9px), linear-gradient(180deg, #F3E9CF 0%, #E9DCC0 100%)",
+              }}
+            />
+          </div>
+        ))}
+      </div>
+
+      {/* invisible hover bands lying on the drawn cards */}
+      {cards.map((card, i) => (
+        <div
+          key={i}
+          aria-hidden="true"
+          onPointerEnter={() => setLifted(i)}
+          onPointerLeave={() => setLifted((current) => (current === i ? null : current))}
+          className="absolute inset-0"
+          style={{ clipPath: `polygon(${pct(card.zone)})`, zIndex: 20 + i }}
+        />
+      ))}
     </div>
   );
 }
