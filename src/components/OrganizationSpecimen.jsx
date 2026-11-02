@@ -1,12 +1,19 @@
 import { useState } from "react";
 import { Image } from "@/components/ui/image";
-import { CARDS, FRONT, PULL } from "@/data/organization";
+import { CARDS, FRONT, PULL, SPRITES } from "@/data/organization";
+import card1 from "@/assets/orgcards/card-1.png";
+import card2 from "@/assets/orgcards/card-2.png";
+import card3 from "@/assets/orgcards/card-3.png";
+import card4 from "@/assets/orgcards/card-4.png";
+import card5 from "@/assets/orgcards/card-5.png";
+import card6 from "@/assets/orgcards/card-6.png";
 
 // The organisation plate: the open card-catalogue drawer, kept exactly as drawn.
-// Passing the cursor through the cards pulls each one up out of the drawer — the
-// card rises as if a hand were drawing it out, and the drawer's wooden front cuts
-// it off at the same line that hides it in the drawing. Leave it, and it slides
-// back into place.
+// The cards in it are the drawing's own paper, re-rendered as separate pieces;
+// passing the cursor through the drawer pops each card up out of it, and the
+// drawer's wooden front cuts it off at the same line that hides it in the
+// drawing. Leave it, and it slides home.
+const CARD_IMAGES = [card1, card2, card3, card4, card5, card6];
 
 // y of the drawer front's top edge at a given x (the line that hides the cards)
 const frontY = (x) =>
@@ -21,20 +28,9 @@ const pct = (pts) => pts.map(([x, y]) => `${x * 100}% ${y * 100}%`).join(", ");
 export default function OrganizationSpecimen({ plate, alt }) {
   const [lifted, setLifted] = useState(null);
 
-  // each card: a paper quad from its drawn top edge, running down into the drawer
   const cards = CARDS.map(([tl, tr], i) => {
-    const d = [tr[0] - tl[0], tr[1] - tl[1]];
-    // the card's sides run perpendicular to its top edge, down into the drawer
-    let n = [-d[1], d[0]];
-    if (n[1] < 0) n = [-n[0], -n[1]];
-    const len = Math.hypot(n[0], n[1]);
-    n = [n[0] / len, n[1] / len];
-    const depth = 0.34;
-    const bl = [tl[0] + n[0] * depth, tl[1] + n[1] * depth];
-    const br = [tr[0] + n[0] * depth, tr[1] + n[1] * depth];
-
     // at rest the card sits low enough that the drawer's front hides it entirely;
-    // taken, it rises by PULL out of the drawer
+    // taken, it pops up by PULL out of the drawer
     const rest = frontY(tl[0]) - tl[1] + 0.012;
     const shift = lifted === i ? rest - PULL : rest;
 
@@ -45,7 +41,7 @@ export default function OrganizationSpecimen({ plate, alt }) {
       ? [tl, tr, next[1], next[0]]
       : [tl, tr, [tr[0], frontY(tr[0]) + 0.004], [tl[0], frontY(tl[0]) + 0.004]];
 
-    return { quad: [tl, tr, br, bl], zone, shift };
+    return { zone, shift, sprite: CARD_IMAGES[i], place: SPRITES[i] };
   });
 
   return (
@@ -58,19 +54,26 @@ export default function OrganizationSpecimen({ plate, alt }) {
           <div
             key={i}
             aria-hidden="true"
-            className="pointer-events-none absolute inset-0 transition-transform duration-300 ease-out"
+            className="pointer-events-none absolute inset-0"
             style={{
               transform: `translateY(${card.shift * 100}%)`,
+              transition: "transform 280ms cubic-bezier(0.34, 1.45, 0.64, 1)",
               zIndex: i + 1,
-              filter: lifted === i ? "drop-shadow(0 -4px 8px rgba(40,25,10,0.45))" : "none",
             }}
           >
-            <div
-              className="absolute inset-0"
+            <img
+              src={card.sprite}
+              alt=""
+              className="absolute h-auto"
               style={{
-                clipPath: `polygon(${pct(card.quad)})`,
-                background:
-                  "linear-gradient(180deg, rgba(90,65,35,0.4) 0%, rgba(90,65,35,0) 4%), repeating-linear-gradient(180deg, rgba(120,90,55,0.14) 0px, rgba(120,90,55,0.14) 1px, rgba(0,0,0,0) 1px, rgba(0,0,0,0) 9px), linear-gradient(180deg, #F3E9CF 0%, #E9DCC0 100%)",
+                left: `${card.place.left * 100}%`,
+                top: `${card.place.top * 100}%`,
+                width: `${card.place.width * 100}%`,
+                filter:
+                  lifted === i
+                    ? "drop-shadow(0 -5px 9px rgba(40, 25, 10, 0.4))"
+                    : "none",
+                transition: "filter 280ms ease-out",
               }}
             />
           </div>

@@ -37,6 +37,17 @@ export const CARDS = [
   ],
 ];
 
+// where each rendered card sprite sits on the plate (left, top, width, as
+// fractions of the plate) — the sprites are drawn from the plate's own paper
+export const SPRITES = [
+  { left: 0.396, top: 0.402, width: 0.1338 },
+  { left: 0.416, top: 0.413, width: 0.1475 },
+  { left: 0.435, top: 0.425, width: 0.1631 },
+  { left: 0.455, top: 0.436, width: 0.1768 },
+  { left: 0.475, top: 0.444, width: 0.1904 },
+  { left: 0.491, top: 0.451, width: 0.2139 },
+];
+
 // how far a card travels up out of the drawer when the cursor takes it, as a
 // fraction of the plate's width
 export const PULL = 0.15;
