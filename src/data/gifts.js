@@ -2,7 +2,7 @@
 // Each gift carries two applicable vocations and five small, measurable practices.
 
 export const CENTRAL_IMAGE =
-  "https://media.base44.com/images/public/6ad6dfe75ae5eedefbd62633/cf08f27bd_generated_image.png";
+  "/plates/cover.png";
 
 export const PROJECT_WORD = "to illustrate";
 
@@ -12,7 +12,7 @@ export const gifts = [
     name: "Knowledge",
     specimen: "Leather-bound reference volumes",
     image:
-      "https://base44.app/api/apps/6ad6dfe75ae5eedefbd62633/files/mp/public/6ad6dfe75ae5eedefbd62633/b96eb61b5_knowledge-cutout.png",
+      "/plates/knowledge-cutout.png",
     // the artwork carries no paper of its own, so it lies straight on the page
     cutout: true,
     jobs: ["Data Analyst", "Reference Librarian"],
@@ -29,7 +29,7 @@ export const gifts = [
     name: "Creativity",
     specimen: "Half-finished study on the easel, with the artist's tools",
     image:
-      "https://base44.app/api/apps/6ad6dfe75ae5eedefbd62633/files/mp/public/6ad6dfe75ae5eedefbd62633/7f3191b71_creativity-easel.png",
+      "/plates/creativity-easel.png",
     // the artwork carries no paper of its own, so it lies straight on the page
     cutout: true,
     jobs: ["UI/UX Designer", "Library Programming & Outreach Coordinator"],
@@ -46,7 +46,7 @@ export const gifts = [
     name: "Observation",
     specimen: "Naturalist's plate, with magnifier & telescope",
     image:
-      "https://base44.app/api/apps/6ad6dfe75ae5eedefbd62633/files/mp/public/6ad6dfe75ae5eedefbd62633/5b420c8b2_observation-animal-plate.png",
+      "/plates/observation-animal-plate.png",
     // the artwork carries no paper of its own, so it lies straight on the page
     cutout: true,
     jobs: ["UX Researcher", "Archivist"],
@@ -63,7 +63,7 @@ export const gifts = [
     name: "Storytelling",
     specimen: "Quill, inkwell & oil lantern",
     image:
-      "https://base44.app/api/apps/6ad6dfe75ae5eedefbd62633/files/mp/public/6ad6dfe75ae5eedefbd62633/35ba61eaf_storytelling-cutout.png",
+      "/plates/storytelling-cutout.png",
     // the artwork carries no paper of its own, so it lies straight on the page
     cutout: true,
     jobs: ["Data Visualization Developer", "Digital Collections Curator"],
@@ -80,7 +80,7 @@ export const gifts = [
     name: "Organization",
     specimen: "Antique card-catalog drawer",
     image:
-      "https://base44.app/api/apps/6ad6dfe75ae5eedefbd62633/files/mp/public/6ad6dfe75ae5eedefbd62633/16d6cff27_catalogue-cutout.png",
+      "/plates/catalogue-cutout.png",
     // the artwork carries no paper of its own, so it lies straight on the page
     cutout: true,
     jobs: ["Information Architect", "Metadata & Cataloging Librarian"],

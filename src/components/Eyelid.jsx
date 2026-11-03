@@ -17,7 +17,7 @@ export default function Eyelid() {
       style={{ mixBlendMode: "multiply" }}
     >
       <Image
-        src="https://media.base44.com/images/public/6ad6dfe75ae5eedefbd62633/490712c0e_generated_image.png"
+        src="/plates/eyelid.png"
         fittingType="fill"
         className="absolute inset-0 h-full w-full"
         alt=""

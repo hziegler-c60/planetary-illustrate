@@ -1,7 +1,7 @@
 import { Image } from "@/components/ui/image";
 
 const MAGNIFIER =
-  "https://base44.app/api/apps/6ad6dfe75ae5eedefbd62633/files/mp/public/6ad6dfe75ae5eedefbd62633/d2fe35a05_observation-magnifier-art.png";
+  "/plates/observation-magnifier-art.png";
 
 // where the round lens sits inside the magnifier drawing, as a fraction of it
 const LENS = { cx: 0.434, cy: 0.389, r: 0.196 };

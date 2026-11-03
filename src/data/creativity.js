@@ -1,7 +1,7 @@
 // Measured from the creativity plate itself, so the brush paints on the sheet of
 // the easel and picks colour from the dabs on the palette, and nowhere else.
 export const BRUSH =
-  "https://base44.app/api/apps/6ad6dfe75ae5eedefbd62633/files/mp/public/6ad6dfe75ae5eedefbd62633/dfdafa66a_creativity-brush.png";
+  "/plates/creativity-brush.png";
 
 // where the bristle tip sits inside the brush drawing, so the tip meets the cursor
 export const BRUSH_TIP = [0.066, 0.929];
