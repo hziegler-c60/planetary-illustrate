@@ -1,10 +1,10 @@
-// Measured from the catalogue plate itself: the open drawer's front edge, and the
+// Measured from the catalogue plate itself: the open drawer's rim, and the
 // top edge of every card standing in the drawer — each card a line stepping
 // down-right toward the viewer, just as drawn.
 
-// the line that hides the cards, measured on the plate: from the back of the
-// drawer's left wall, to the front-left corner, then along the front panel's
-// top rim to the front-right corner — anything below is inside the drawer
+// the line that hides the cards: from the back of the drawer's left wall, to
+// the front-left corner, then along the front panel's top rim to the
+// front-right corner — anything below is inside the drawer
 export const FRONT = [
   [0.3799, 0.458], // left wall, up toward the back
   [0.4395, 0.5195], // front-left corner of the drawer
@@ -13,6 +13,18 @@ export const FRONT = [
 
 // each card's top edge: [left end], [right end], back card first
 export const CARDS = [
+  [
+    [0.39, 0.406],
+    [0.484, 0.4],
+  ],
+  [
+    [0.395, 0.415],
+    [0.496, 0.408],
+  ],
+  [
+    [0.4, 0.423],
+    [0.507, 0.415],
+  ],
   [
     [0.408, 0.432],
     [0.518, 0.422],
@@ -42,6 +54,9 @@ export const CARDS = [
 // where each rendered card sprite sits on the plate (left, top, width, as
 // fractions of the plate) — the sprites are drawn from the plate's own paper
 export const SPRITES = [
+  { left: 0.378, top: 0.372, width: 0.118 },
+  { left: 0.383, top: 0.381, width: 0.125 },
+  { left: 0.388, top: 0.389, width: 0.131 },
   { left: 0.396, top: 0.398, width: 0.1338 },
   { left: 0.416, top: 0.409, width: 0.1475 },
   { left: 0.435, top: 0.421, width: 0.1631 },
@@ -53,3 +68,11 @@ export const SPRITES = [
 // how far a card travels up out of the drawer when the cursor takes it, as a
 // fraction of the plate's width
 export const PULL = 0.15;
+
+// the stack's left boundary (the card corners stepping down-right) and the
+// back edge of the drawer opening — the hover bands fill everything between
+export const STACK_LEFT = [
+  [0.386, 0.404],
+  [0.503, 0.481],
+];
+export const STACK_BACK = 0.396;

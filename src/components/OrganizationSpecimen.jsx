@@ -1,19 +1,22 @@
 import { useState } from "react";
 import { Image } from "@/components/ui/image";
-import { CARDS, FRONT, PULL, SPRITES } from "@/data/organization";
+import { CARDS, FRONT, PULL, SPRITES, STACK_BACK, STACK_LEFT } from "@/data/organization";
 import card1 from "@/assets/orgcards/card-1.png";
 import card2 from "@/assets/orgcards/card-2.png";
 import card3 from "@/assets/orgcards/card-3.png";
 import card4 from "@/assets/orgcards/card-4.png";
 import card5 from "@/assets/orgcards/card-5.png";
 import card6 from "@/assets/orgcards/card-6.png";
+import card7 from "@/assets/orgcards/card-7.png";
+import card8 from "@/assets/orgcards/card-8.png";
+import card9 from "@/assets/orgcards/card-9.png";
 
 // The organisation plate: the open card-catalogue drawer, kept exactly as drawn.
 // The cards in it are the drawing's own paper, re-rendered as separate pieces;
-// passing the cursor through the drawer pops each card up out of it, and the
-// drawer's wooden front cuts it off at the same line that hides it in the
-// drawing. Leave it, and it slides home.
-const CARD_IMAGES = [card1, card2, card3, card4, card5, card6];
+// passing the cursor anywhere through the drawer pulls that card up out of it,
+// and the drawer's wooden front cuts it off at the same line that hides it in
+// the drawing. Leave it, and it slides home.
+const CARD_IMAGES = [card1, card2, card3, card4, card5, card6, card7, card8, card9];
 
 // y of the drawer line at a given x, following the measured polyline
 // (extended with its end slopes beyond the measured span)
@@ -24,8 +27,14 @@ const frontY = (x) => {
   return seg(FRONT[1], FRONT[2]); // front rim (extended right)
 };
 
-// the region above that line, extended to the plate's edges — the only place a
-// pulled card may show
+// x of the stack's stepped left boundary at a given y
+const stackLeftX = (y) =>
+  STACK_LEFT[0][0] +
+  ((y - STACK_LEFT[0][1]) * (STACK_LEFT[1][0] - STACK_LEFT[0][0])) /
+    (STACK_LEFT[1][1] - STACK_LEFT[0][1]);
+
+// the region above the drawer line, extended to the plate's edges — the only
+// place a pulled card may show
 const VISIBLE = `polygon(0% 0%, 100% 0%, 100% ${frontY(1) * 100}%, ${FRONT[2][0] * 100}% ${
   FRONT[2][1] * 100
 }%, ${FRONT[1][0] * 100}% ${FRONT[1][1] * 100}%, ${FRONT[0][0] * 100}% ${
@@ -49,12 +58,23 @@ export default function OrganizationSpecimen({ plate, alt }) {
     const rest = Math.max(...span.map(clearance)) + 0.012;
     const shift = lifted === i ? -PULL : rest;
 
-    // its hover band runs from its own top edge to the next card's (or, for the
-    // front card, down to the drawer's front edge)
-    const next = CARDS[i + 1];
-    const zone = next
-      ? [tl, tr, next[1], next[0]]
-      : [tl, tr, [tr[0], frontY(tr[0]) + 0.004], [tl[0], frontY(tl[0]) + 0.004]];
+    // its hover band is its own visible face: from the card behind's edge down
+    // to its own, stretched across the full width of the drawer so no spot of
+    // the stack is dead — the front card's band runs on to the rim, the back
+    // card's starts at the drawer's opening
+    const prev = CARDS[i - 1];
+    const topY = prev ? (prev[0][1] + prev[1][1]) / 2 : STACK_BACK;
+    const botY =
+      i === CARDS.length - 1
+        ? Math.max(frontY(tl[0]), frontY(tr[0])) - 0.006
+        : (tl[1] + tr[1]) / 2;
+    const right = tr[0] + 0.012;
+    const zone = [
+      [stackLeftX(topY) - 0.006, topY],
+      [right, topY],
+      [right, botY],
+      [stackLeftX(botY) - 0.006, botY],
+    ];
 
     return { zone, shift, sprite: CARD_IMAGES[i], place: SPRITES[i] };
   });
@@ -95,7 +115,7 @@ export default function OrganizationSpecimen({ plate, alt }) {
         ))}
       </div>
 
-      {/* invisible hover bands lying on the drawn cards */}
+      {/* invisible hover bands tiling the whole drawer */}
       {cards.map((card, i) => (
         <div
           key={i}
