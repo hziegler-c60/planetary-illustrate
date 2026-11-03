@@ -2,11 +2,13 @@
 // top edge of every card standing in the drawer — each card a line stepping
 // down-right toward the viewer, just as drawn.
 
-// the top edge of the drawer's front panel: [left], [right] — anything below this
-// line is inside the drawer, hidden behind its wooden face
+// the line that hides the cards, measured on the plate: from the back of the
+// drawer's left wall, to the front-left corner, then along the front panel's
+// top rim to the front-right corner — anything below is inside the drawer
 export const FRONT = [
-  [0.371, 0.457],
-  [0.76, 0.525],
+  [0.3799, 0.458], // left wall, up toward the back
+  [0.4395, 0.5195], // front-left corner of the drawer
+  [0.7422, 0.4786], // front-right corner
 ];
 
 // each card's top edge: [left end], [right end], back card first
@@ -40,12 +42,12 @@ export const CARDS = [
 // where each rendered card sprite sits on the plate (left, top, width, as
 // fractions of the plate) — the sprites are drawn from the plate's own paper
 export const SPRITES = [
-  { left: 0.396, top: 0.402, width: 0.1338 },
-  { left: 0.416, top: 0.413, width: 0.1475 },
-  { left: 0.435, top: 0.425, width: 0.1631 },
-  { left: 0.455, top: 0.436, width: 0.1768 },
-  { left: 0.475, top: 0.444, width: 0.1904 },
-  { left: 0.491, top: 0.451, width: 0.2139 },
+  { left: 0.396, top: 0.398, width: 0.1338 },
+  { left: 0.416, top: 0.409, width: 0.1475 },
+  { left: 0.435, top: 0.421, width: 0.1631 },
+  { left: 0.455, top: 0.432, width: 0.1768 },
+  { left: 0.475, top: 0.44, width: 0.1904 },
+  { left: 0.491, top: 0.447, width: 0.2139 },
 ];
 
 // how far a card travels up out of the drawer when the cursor takes it, as a

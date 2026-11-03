@@ -15,13 +15,22 @@ import card6 from "@/assets/orgcards/card-6.png";
 // drawing. Leave it, and it slides home.
 const CARD_IMAGES = [card1, card2, card3, card4, card5, card6];
 
-// y of the drawer front's top edge at a given x (the line that hides the cards)
-const frontY = (x) =>
-  FRONT[0][1] + ((x - FRONT[0][0]) * (FRONT[1][1] - FRONT[0][1])) / (FRONT[1][0] - FRONT[0][0]);
+// y of the drawer line at a given x, following the measured polyline
+// (extended with its end slopes beyond the measured span)
+const frontY = (x) => {
+  const seg = (a, b) => a[1] + ((x - a[0]) * (b[1] - a[1])) / (b[0] - a[0]);
+  if (x < FRONT[0][0]) return seg(FRONT[1], FRONT[0]); // left wall, extended
+  if (x < FRONT[1][0]) return seg(FRONT[0], FRONT[1]); // left wall
+  return seg(FRONT[1], FRONT[2]); // front rim (extended right)
+};
 
 // the region above that line, extended to the plate's edges — the only place a
 // pulled card may show
-const VISIBLE = `polygon(0% 0%, 100% 0%, 100% ${frontY(1) * 100}%, 0% ${frontY(0) * 100}%)`;
+const VISIBLE = `polygon(0% 0%, 100% 0%, 100% ${frontY(1) * 100}%, ${FRONT[2][0] * 100}% ${
+  FRONT[2][1] * 100
+}%, ${FRONT[1][0] * 100}% ${FRONT[1][1] * 100}%, ${FRONT[0][0] * 100}% ${
+  FRONT[0][1] * 100
+}%, 0% ${frontY(0) * 100}%)`;
 
 const pct = (pts) => pts.map(([x, y]) => `${x * 100}% ${y * 100}%`).join(", ");
 
@@ -29,10 +38,16 @@ export default function OrganizationSpecimen({ plate, alt }) {
   const [lifted, setLifted] = useState(null);
 
   const cards = CARDS.map(([tl, tr], i) => {
-    // at rest the card sits low enough that the drawer's front hides it entirely;
-    // taken, it pops up by PULL out of the drawer
-    const rest = frontY(tl[0]) - tl[1] + 0.012;
-    const shift = lifted === i ? rest - PULL : rest;
+    // at rest the card sits low enough that the drawer's front hides it
+    // entirely, wherever the rim line crosses its width; taken, it rises
+    // straight up out of its own slot by PULL
+    const slope = (tr[1] - tl[1]) / (tr[0] - tl[0]);
+    const clearance = (x) => frontY(x) - (tl[1] + slope * (x - tl[0]));
+    const span = [tl[0], tr[0], FRONT[1][0]].filter(
+      (x, j) => j < 2 || (x > tl[0] && x < tr[0])
+    );
+    const rest = Math.max(...span.map(clearance)) + 0.012;
+    const shift = lifted === i ? -PULL : rest;
 
     // its hover band runs from its own top edge to the next card's (or, for the
     // front card, down to the drawer's front edge)
