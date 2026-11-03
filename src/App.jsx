@@ -12,7 +12,7 @@ import PencilCursor from '@/components/PencilCursor';
 function App() {
   return (
     <QueryClientProvider client={queryClientInstance}>
-      <Router>
+      <Router basename={import.meta.env.BASE_URL}>
         <ScrollToTop />
         <Routes>
           {/* Add your page Route elements here */}
