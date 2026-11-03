@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Image } from "@/components/ui/image";
-import { CARDS, FRONT, PULL, SPRITES, STACK_BACK, STACK_LEFT } from "@/data/organization";
+import { CARDS, FRONT, PULL, SPRITES, STACK_BACK, STACK_LEFT, TILT } from "@/data/organization";
 import card1 from "@/assets/orgcards/card-1.png";
 import card2 from "@/assets/orgcards/card-2.png";
 import card3 from "@/assets/orgcards/card-3.png";
@@ -57,6 +57,11 @@ export default function OrganizationSpecimen({ plate, alt }) {
     );
     const rest = Math.max(...span.map(clearance)) + 0.012;
     const shift = lifted === i ? -PULL : rest;
+    // pulled, the card tips back toward the rear of the drawer, pivoting at
+    // its slot in the rim
+    const pivotX = (tl[0] + tr[0]) / 2;
+    const pivotY = frontY(pivotX);
+    const tilt = lifted === i ? TILT : 0;
 
     // its hover band is its own visible face: from the card behind's edge down
     // to its own, stretched across the full width of the drawer so no spot of
@@ -76,7 +81,7 @@ export default function OrganizationSpecimen({ plate, alt }) {
       [stackLeftX(botY) - 0.006, botY],
     ];
 
-    return { zone, shift, sprite: CARD_IMAGES[i], place: SPRITES[i] };
+    return { zone, shift, tilt, pivotX, pivotY, sprite: CARD_IMAGES[i], place: SPRITES[i] };
   });
 
   return (
@@ -91,7 +96,8 @@ export default function OrganizationSpecimen({ plate, alt }) {
             aria-hidden="true"
             className="pointer-events-none absolute inset-0"
             style={{
-              transform: `translateY(${card.shift * 100}%)`,
+              transform: `translateY(${card.shift * 100}%) rotate(${card.tilt}deg)`,
+              transformOrigin: `${card.pivotX * 100}% ${card.pivotY * 100}%`,
               transition: "transform 280ms cubic-bezier(0.34, 1.45, 0.64, 1)",
               zIndex: i + 1,
             }}

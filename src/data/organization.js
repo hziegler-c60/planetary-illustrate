@@ -1,6 +1,6 @@
 // Measured from the catalogue plate itself: the open drawer's rim, and the
-// top edge of every card standing in the drawer — each card a line stepping
-// down-right toward the viewer, just as drawn.
+// top edge of every card standing in the drawer — each card running from its
+// stepped left corner all the way right to the drawer's side wall.
 
 // the line that hides the cards: from the back of the drawer's left wall, to
 // the front-left corner, then along the front panel's top rim to the
@@ -11,63 +11,66 @@ export const FRONT = [
   [0.7422, 0.4786], // front-right corner
 ];
 
-// each card's top edge: [left end], [right end], back card first
+// each card's top edge: [left end], [right end at the side wall], back first
 export const CARDS = [
   [
     [0.39, 0.406],
-    [0.484, 0.4],
+    [0.621, 0.4],
   ],
   [
     [0.395, 0.415],
-    [0.496, 0.408],
+    [0.63, 0.407],
   ],
   [
     [0.4, 0.423],
-    [0.507, 0.415],
+    [0.638, 0.416],
   ],
   [
     [0.408, 0.432],
-    [0.518, 0.422],
+    [0.646, 0.424],
   ],
   [
     [0.428, 0.443],
-    [0.552, 0.434],
+    [0.656, 0.434],
   ],
   [
     [0.447, 0.455],
-    [0.586, 0.445],
+    [0.666, 0.444],
   ],
   [
     [0.467, 0.466],
-    [0.62, 0.457],
+    [0.676, 0.455],
   ],
   [
     [0.487, 0.474],
-    [0.654, 0.467],
+    [0.684, 0.463],
   ],
   [
     [0.503, 0.481],
-    [0.693, 0.477],
+    [0.693, 0.476],
   ],
 ];
 
 // where each rendered card sprite sits on the plate (left, top, width, as
 // fractions of the plate) — the sprites are drawn from the plate's own paper
 export const SPRITES = [
-  { left: 0.378, top: 0.372, width: 0.118 },
-  { left: 0.383, top: 0.381, width: 0.125 },
-  { left: 0.388, top: 0.389, width: 0.131 },
-  { left: 0.396, top: 0.398, width: 0.1338 },
-  { left: 0.416, top: 0.409, width: 0.1475 },
-  { left: 0.435, top: 0.421, width: 0.1631 },
-  { left: 0.455, top: 0.432, width: 0.1768 },
-  { left: 0.475, top: 0.44, width: 0.1904 },
-  { left: 0.491, top: 0.447, width: 0.2139 },
+  { left: 0.378, top: 0.372, width: 0.255 },
+  { left: 0.383, top: 0.381, width: 0.259 },
+  { left: 0.388, top: 0.389, width: 0.262 },
+  { left: 0.396, top: 0.398, width: 0.262 },
+  { left: 0.416, top: 0.409, width: 0.252 },
+  { left: 0.435, top: 0.421, width: 0.243 },
+  { left: 0.455, top: 0.432, width: 0.233 },
+  { left: 0.475, top: 0.44, width: 0.221 },
+  { left: 0.491, top: 0.447, width: 0.214 },
 ];
 
 // how far a card travels up out of the drawer when the cursor takes it, as a
 // fraction of the plate's width
 export const PULL = 0.15;
+
+// how far the pulled card tips back toward the rear of the drawer, in degrees
+export const TILT = -4;
 
 // the stack's left boundary (the card corners stepping down-right) and the
 // back edge of the drawer opening — the hover bands fill everything between
