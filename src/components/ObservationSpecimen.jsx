@@ -3,7 +3,7 @@ import { Image } from "@/components/ui/image";
 import MagnifyingGlass, { lensCircle } from "@/components/MagnifyingGlass";
 
 const TELESCOPE =
-  "/plates/observation-telescope-art.png";
+  `${import.meta.env.BASE_URL}plates/observation-telescope-art.png`;
 
 // The observation plate: the naturalist's study, cut from its paper like every
 // other gift. The field telescope rests in one corner, and the magnifier rides

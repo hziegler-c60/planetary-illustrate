@@ -1,7 +1,7 @@
 import { Image } from "@/components/ui/image";
 
 const MAGNIFIER =
-  "/plates/observation-magnifier-art.png";
+  `${import.meta.env.BASE_URL}plates/observation-magnifier-art.png`;
 
 // where the round lens sits inside the magnifier drawing, as a fraction of it
 const LENS = { cx: 0.434, cy: 0.389, r: 0.196 };

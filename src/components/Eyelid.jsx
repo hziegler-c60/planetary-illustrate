@@ -17,7 +17,7 @@ export default function Eyelid() {
       style={{ mixBlendMode: "multiply" }}
     >
       <Image
-        src="/plates/eyelid.png"
+        src={`${import.meta.env.BASE_URL}plates/eyelid.png`}
         fittingType="fill"
         className="absolute inset-0 h-full w-full"
         alt=""

@@ -2,7 +2,7 @@
 // Each gift carries two applicable vocations and five small, measurable practices.
 
 export const CENTRAL_IMAGE =
-  "/plates/cover.png";
+  `${import.meta.env.BASE_URL}plates/cover.png`;
 
 export const PROJECT_WORD = "to illustrate";
 
@@ -12,7 +12,7 @@ export const gifts = [
     name: "Knowledge",
     specimen: "Leather-bound reference volumes",
     image:
-      "/plates/knowledge-cutout.png",
+      `${import.meta.env.BASE_URL}plates/knowledge-cutout.png`,
     // the artwork carries no paper of its own, so it lies straight on the page
     cutout: true,
     jobs: ["Data Analyst", "Reference Librarian"],
@@ -29,7 +29,7 @@ export const gifts = [
     name: "Creativity",
     specimen: "Half-finished study on the easel, with the artist's tools",
     image:
-      "/plates/creativity-easel.png",
+      `${import.meta.env.BASE_URL}plates/creativity-easel.png`,
     // the artwork carries no paper of its own, so it lies straight on the page
     cutout: true,
     jobs: ["UI/UX Designer", "Library Programming & Outreach Coordinator"],
@@ -46,7 +46,7 @@ export const gifts = [
     name: "Observation",
     specimen: "Naturalist's plate, with magnifier & telescope",
     image:
-      "/plates/observation-animal-plate.png",
+      `${import.meta.env.BASE_URL}plates/observation-animal-plate.png`,
     // the artwork carries no paper of its own, so it lies straight on the page
     cutout: true,
     jobs: ["UX Researcher", "Archivist"],
@@ -63,7 +63,7 @@ export const gifts = [
     name: "Storytelling",
     specimen: "Quill, inkwell & oil lantern",
     image:
-      "/plates/storytelling-cutout.png",
+      `${import.meta.env.BASE_URL}plates/storytelling-cutout.png`,
     // the artwork carries no paper of its own, so it lies straight on the page
     cutout: true,
     jobs: ["Data Visualization Developer", "Digital Collections Curator"],
@@ -80,7 +80,7 @@ export const gifts = [
     name: "Organization",
     specimen: "Antique card-catalog drawer",
     image:
-      "/plates/catalogue-cutout.png",
+      `${import.meta.env.BASE_URL}plates/catalogue-cutout.png`,
     // the artwork carries no paper of its own, so it lies straight on the page
     cutout: true,
     jobs: ["Information Architect", "Metadata & Cataloging Librarian"],
