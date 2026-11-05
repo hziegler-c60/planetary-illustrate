@@ -1,17 +1,30 @@
-// The storytelling plate: the writing desk, and the poems the scroll tells.
-// The scroll lies rolled on the desk until the cursor comes to it; then it
-// opens and a poem writes itself out word by word.
+// The storytelling plate: a writing desk, a parchment sheet, a movable roll,
+// and the poems the scroll tells.
+// The plate is built from layers — bare desk, sheet, roll — so the roll is a
+// real thing you can grab: pull it down and the sheet feeds out beneath it.
 
-export const DESK_OPEN =
-  `${import.meta.env.BASE_URL}plates/storytelling-desk-open.png`;
+export const SHEET_IMG =
+  `${import.meta.env.BASE_URL}plates/storytelling-sheet.png`;
+export const ROLL_IMG =
+  `${import.meta.env.BASE_URL}plates/storytelling-roll.png`;
 
-// the clear parchment area of the open plate, as x0, y0, x1, y1 of the plate —
-// the plate artwork is rectified so the sheet is a true rectangle and the
+// the clear parchment writing area, as x0, y0, x1, y1 of the plate —
+// the artwork is rectified so the sheet is a true rectangle and the
 // writing runs perfectly parallel to its edges
 export const SHEET = [0.145, 0.225, 0.705, 0.71];
 
-// ms for the scroll to unroll from cylinder to full sheet
-export const ROLL_MS = 900;
+// geometry of the layered scroll, in fractions of the plate:
+// the sheet sprite, the roll sprite (x, w, h), the roll's resting top,
+// and how far it travels from rolled-up to resting at the sheet's foot
+export const SCROLL = {
+  sheet: [0.1123, 0.1807, 0.624, 0.5605],
+  roll: [0.1, 0.66, 0.118],
+  restTop: 0.0627,
+  travel: 0.6723,
+};
+
+// ms for the roll to snap open or shut when released or tapped
+export const ROLL_MS = 650;
 
 // ms per word — brisk enough that a whole poem does not try the reader's patience
 export const WORD_MS = 55;

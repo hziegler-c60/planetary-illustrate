@@ -1,13 +1,12 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Image } from "@/components/ui/image";
-import { DESK_OPEN, POEMS, ROLL_MS, SHEET, WORD_MS } from "@/data/storytelling";
+import { POEMS, ROLL_IMG, ROLL_MS, SCROLL, SHEET, SHEET_IMG, WORD_MS } from "@/data/storytelling";
 
-// The storytelling plate: a writing desk with a rolled scroll, quill & ink.
-// When the cursor comes to the scroll it unrolls — the sheet sweeps down out
-// of the cylinder, a roll shadow traveling with its leading edge — and one of
-// the poems surfaces on the parchment word by word, like invisible ink.
-// Leave, and the scroll rolls back up; return, and a different poem begins.
-// A tap does the same on touch screens.
+// The storytelling plate: a bare writing desk, a parchment sheet, and a roll
+// you can actually grab. Pull the roll down and the sheet feeds out beneath
+// it; let go past halfway and it settles open, or it springs back shut.
+// Once the sheet is nearly all out, a poem surfaces on it word by word,
+// like invisible ink. Tap the roll to open or close it without dragging.
 
 // the ink does not stamp down all at once — each word surfaces out of the
 // parchment fibres: a blur, a breath, then dark sepia that lets the grain
@@ -26,9 +25,11 @@ const INK_CSS = `
 }
 `;
 
-const ROLL_EASE = "cubic-bezier(.45,.02,.3,1)";
-// the ink waits for the parchment to arrive before it starts surfacing
-const INK_START_MS = 450;
+// the ink waits until the sheet is nearly all unrolled before surfacing
+const INK_THRESHOLD = 0.8;
+const INK_START_MS = 300;
+// released past this point, the roll settles open; before it, it rolls back
+const SNAP_POINT = 0.45;
 
 // a steady, repeatable scramble — every word gets its own slight tilt and
 // ink weight, the way a hand never presses the same way twice
@@ -47,20 +48,49 @@ const START_CQW = 3;
 const MIN_CQW = 1.0;
 const STEP_CQW = 0.15;
 
+const clamp01 = (v) => Math.min(1, Math.max(0, v));
+
 export default function StorytellingSpecimen({ plate, alt }) {
+  const [progress, setProgress] = useState(0); // 0 rolled up, 1 fully unrolled
   const [open, setOpen] = useState(false);
   const [poem, setPoem] = useState(null);
   const [cqw, setCqw] = useState(START_CQW);
-  const [rolling, setRolling] = useState(false);
+  const [dragging, setDragging] = useState(false);
   const lastRef = useRef(-1); // last poem told, so the next telling is a new one
-  const touchRef = useRef(false);
-  const mountedRef = useRef(false);
+  const progressRef = useRef(0);
+  const dragRef = useRef(null);
+  const rafRef = useRef(null);
+  const plateRef = useRef(null);
   const sheetRef = useRef(null);
   const bodyRef = useRef(null);
 
+  const setP = (v) => {
+    progressRef.current = v;
+    setProgress(v);
+  };
+
+  const animateTo = (target) => {
+    cancelAnimationFrame(rafRef.current);
+    const from = progressRef.current;
+    const t0 = performance.now();
+    const ms = ROLL_MS * Math.min(1, Math.abs(target - from) + 0.25);
+    const step = (now) => {
+      const k = Math.min(1, (now - t0) / ms);
+      const e = 1 - Math.pow(1 - k, 3); // ease-out, like a roll settling
+      setP(from + (target - from) * e);
+      if (k < 1) rafRef.current = requestAnimationFrame(step);
+    };
+    rafRef.current = requestAnimationFrame(step);
+  };
+
+  const settle = (target) => {
+    setOpen(target === 1);
+    animateTo(target);
+  };
+
+  // pick a fresh poem each time the scroll opens; forget it once rolled up
   useEffect(() => {
     if (!open) {
-      // let the scroll finish rolling up before forgetting the poem
       const t = setTimeout(() => setPoem(null), ROLL_MS);
       return () => clearTimeout(t);
     }
@@ -70,17 +100,6 @@ export default function StorytellingSpecimen({ plate, alt }) {
     setCqw(START_CQW);
     setPoem(POEMS[idx]);
     return undefined;
-  }, [open]);
-
-  // the roll shadow travels only while the scroll is actually moving
-  useEffect(() => {
-    if (!mountedRef.current) {
-      mountedRef.current = true;
-      return undefined;
-    }
-    setRolling(true);
-    const t = setTimeout(() => setRolling(false), ROLL_MS);
-    return () => clearTimeout(t);
   }, [open]);
 
   // fit the telling to the sheet: shrink the ink until every word of the
@@ -95,65 +114,90 @@ export default function StorytellingSpecimen({ plate, alt }) {
     }
   }, [open, poem, cqw]);
 
+  useEffect(() => () => cancelAnimationFrame(rafRef.current), []);
+
+  const onRollPointerDown = (e) => {
+    e.preventDefault();
+    e.currentTarget.setPointerCapture(e.pointerId);
+    cancelAnimationFrame(rafRef.current);
+    dragRef.current = { y: e.clientY, p: progressRef.current, moved: false };
+    setDragging(true);
+  };
+
+  const onRollPointerMove = (e) => {
+    const d = dragRef.current;
+    if (!d || !plateRef.current) return;
+    const dp = (e.clientY - d.y) / plateRef.current.getBoundingClientRect().height;
+    if (Math.abs(dp) > 0.012) d.moved = true;
+    const v = clamp01(d.p + dp);
+    setP(v);
+    if (v >= INK_THRESHOLD && !open) setOpen(true);
+    if (v <= 0.1 && open) setOpen(false);
+  };
+
+  const onRollPointerUp = () => {
+    const d = dragRef.current;
+    dragRef.current = null;
+    setDragging(false);
+    if (!d) return;
+    if (!d.moved) {
+      // a tap, not a pull — roll it the rest of the way by itself
+      settle(progressRef.current < 0.5 ? 1 : 0);
+    } else {
+      settle(progressRef.current > SNAP_POINT ? 1 : 0);
+    }
+  };
+
+  const [sx, sy, sw, sh] = SCROLL.sheet;
+  const [rx, rw, rh] = SCROLL.roll;
+  const rollTop = SCROLL.restTop + progress * SCROLL.travel;
+  const rollBottom = rollTop + rh;
+  // how much of the sheet has fed out from under the roll
+  const sheetOut = clamp01((rollBottom - sy) / sh);
+  // how far the reveal line has travelled through the writing area
+  const textOut = clamp01((rollBottom - SHEET[1]) / (SHEET[3] - SHEET[1]));
+
   let wordIndex = 0;
 
   return (
     <div>
       <style>{INK_CSS}</style>
       <div
+        ref={plateRef}
         role="button"
         tabIndex={0}
-        aria-label={`${alt} — unroll the scroll to read a poem`}
-        onPointerEnter={(e) => {
-          if (e.pointerType !== "touch") setOpen(true);
-        }}
-        onPointerLeave={(e) => {
-          if (e.pointerType !== "touch") setOpen(false);
-        }}
-        onPointerDown={(e) => {
-          touchRef.current = e.pointerType === "touch";
-        }}
-        onClick={() => {
-          if (touchRef.current) setOpen((o) => !o);
-        }}
+        aria-label={`${alt} — pull the scroll down to read a poem`}
+        aria-expanded={open}
         onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") setOpen((o) => !o);
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            settle(open ? 0 : 1);
+          }
         }}
-        className="relative w-full cursor-pointer select-none [container-type:inline-size]"
+        className="relative w-full select-none [container-type:inline-size]"
       >
         <Image src={plate} alt={alt} fittingType="fit" className="h-auto w-full" />
 
-        {/* the unrolled plate, sweeping down out of the cylinder */}
-        <div
-          aria-hidden={!open}
-          className="absolute inset-0"
-          style={{
-            clipPath: open ? "inset(0% 0% 0% 0%)" : "inset(0% 0% 100% 0%)",
-            transition: `clip-path ${ROLL_MS}ms ${ROLL_EASE}`,
-          }}
-        >
-          <Image src={DESK_OPEN} alt="" fittingType="fit" className="h-auto w-full" />
-        </div>
-
-        {/* the shadow of the roll, riding its leading edge */}
-        <div
+        {/* the parchment sheet, feeding out from under the roll */}
+        <img
+          src={SHEET_IMG}
+          alt=""
           aria-hidden
-          className="pointer-events-none absolute left-0 w-full"
+          draggable={false}
+          className="pointer-events-none absolute"
           style={{
-            top: open ? "102%" : "-2%",
-            height: "4.5cqw",
-            transform: "translateY(-50%)",
-            background:
-              "linear-gradient(rgba(56,34,10,0.30), rgba(56,34,10,0.12) 55%, rgba(56,34,10,0))",
-            opacity: rolling ? 1 : 0,
-            transition: `top ${ROLL_MS}ms ${ROLL_EASE}, opacity 200ms ease`,
+            left: `${sx * 100}%`,
+            top: `${sy * 100}%`,
+            width: `${sw * 100}%`,
+            height: `${sh * 100}%`,
+            clipPath: `inset(0% 0% ${(1 - sheetOut) * 100}% 0%)`,
           }}
         />
 
         {/* the writing on the sheet, blended into the parchment */}
         <div
           aria-live="polite"
-          className="absolute"
+          className="pointer-events-none absolute"
           style={{
             left: `${SHEET[0] * 100}%`,
             top: `${SHEET[1] * 100}%`,
@@ -161,8 +205,8 @@ export default function StorytellingSpecimen({ plate, alt }) {
             height: `${(SHEET[3] - SHEET[1]) * 100}%`,
             mixBlendMode: "multiply",
             opacity: open ? 1 : 0,
-            clipPath: open ? "inset(-25% -25% 0% -25%)" : "inset(-25% -25% 125% -25%)",
-            transition: `clip-path ${ROLL_MS}ms ${ROLL_EASE}, opacity 300ms ease`,
+            clipPath: `inset(0% 0% ${(1 - textOut) * 100}% 0%)`,
+            transition: "opacity 300ms ease",
           }}
         >
           <div
@@ -213,9 +257,30 @@ export default function StorytellingSpecimen({ plate, alt }) {
             )}
           </div>
         </div>
+
+        {/* the roll — grab it and pull */}
+        <img
+          src={ROLL_IMG}
+          alt=""
+          aria-hidden
+          draggable={false}
+          onPointerDown={onRollPointerDown}
+          onPointerMove={onRollPointerMove}
+          onPointerUp={onRollPointerUp}
+          onPointerCancel={onRollPointerUp}
+          className={`absolute ${dragging ? "cursor-grabbing" : "cursor-grab"}`}
+          style={{
+            left: `${rx * 100}%`,
+            top: `${rollTop * 100}%`,
+            width: `${rw * 100}%`,
+            height: `${rh * 100}%`,
+            touchAction: "none",
+            filter: "drop-shadow(0 0.9cqw 0.7cqw rgba(40,22,6,0.45))",
+          }}
+        />
       </div>
       <p className="mt-2 text-center font-[var(--font-body)] text-[11px] italic text-[#5a5148]/70">
-        Unroll the scroll — a poem surfaces like invisible ink.
+        Pull the scroll down — a poem surfaces like invisible ink.
       </p>
     </div>
   );

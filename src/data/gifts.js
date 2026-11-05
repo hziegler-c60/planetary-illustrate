@@ -63,7 +63,7 @@ export const gifts = [
     name: "Storytelling",
     specimen: "Writing desk with scroll, quill & ink",
     image:
-      `${import.meta.env.BASE_URL}plates/storytelling-desk.png`,
+      `${import.meta.env.BASE_URL}plates/storytelling-desk-bare.png`,
     // the artwork carries no paper of its own, so it lies straight on the page
     cutout: true,
     jobs: ["Data Visualization Developer", "Digital Collections Curator"],
