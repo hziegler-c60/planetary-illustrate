@@ -6,8 +6,9 @@ export const DESK_OPEN =
   `${import.meta.env.BASE_URL}plates/storytelling-desk-open.png`;
 
 // the clear parchment area of the open plate, as x0, y0, x1, y1 of the plate —
-// the plate artwork is already leveled, so the writing runs straight across
-export const SHEET = [0.12, 0.26, 0.7, 0.66];
+// the plate artwork is rectified so the sheet is a true rectangle and the
+// writing runs perfectly parallel to its edges
+export const SHEET = [0.145, 0.225, 0.705, 0.71];
 
 // ms for the scroll to unroll from cylinder to full sheet
 export const ROLL_MS = 900;
