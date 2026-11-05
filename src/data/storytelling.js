@@ -5,10 +5,12 @@
 export const DESK_OPEN =
   `${import.meta.env.BASE_URL}plates/storytelling-desk-open.png`;
 
-// the clear parchment area of the open plate, as x0, y0, x1, y1 of the plate,
-// and the tilt of the sheet so the writing lies along it, not across it
-export const SHEET = [0.13, 0.255, 0.675, 0.54];
-export const SHEET_ROT = 6;
+// the clear parchment area of the open plate, as x0, y0, x1, y1 of the plate —
+// the plate artwork is already leveled, so the writing runs straight across
+export const SHEET = [0.12, 0.26, 0.7, 0.66];
+
+// ms for the scroll to unroll from cylinder to full sheet
+export const ROLL_MS = 900;
 
 // ms per word — brisk enough that a whole poem does not try the reader's patience
 export const WORD_MS = 55;

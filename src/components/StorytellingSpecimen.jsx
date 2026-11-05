@@ -1,10 +1,11 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Image } from "@/components/ui/image";
-import { DESK_OPEN, POEMS, SHEET, SHEET_ROT, WORD_MS } from "@/data/storytelling";
+import { DESK_OPEN, POEMS, ROLL_MS, SHEET, WORD_MS } from "@/data/storytelling";
 
 // The storytelling plate: a writing desk with a rolled scroll, quill & ink.
-// When the cursor comes to the scroll it unrolls, and one of the poems appears
-// on the parchment word by word, like invisible ink rising to the surface.
+// When the cursor comes to the scroll it unrolls — the sheet sweeps down out
+// of the cylinder, a roll shadow traveling with its leading edge — and one of
+// the poems surfaces on the parchment word by word, like invisible ink.
 // Leave, and the scroll rolls back up; return, and a different poem begins.
 // A tap does the same on touch screens.
 
@@ -24,6 +25,10 @@ const INK_CSS = `
   will-change: opacity, filter, transform;
 }
 `;
+
+const ROLL_EASE = "cubic-bezier(.45,.02,.3,1)";
+// the ink waits for the parchment to arrive before it starts surfacing
+const INK_START_MS = 450;
 
 // a steady, repeatable scramble — every word gets its own slight tilt and
 // ink weight, the way a hand never presses the same way twice
@@ -46,15 +51,17 @@ export default function StorytellingSpecimen({ plate, alt }) {
   const [open, setOpen] = useState(false);
   const [poem, setPoem] = useState(null);
   const [cqw, setCqw] = useState(START_CQW);
+  const [rolling, setRolling] = useState(false);
   const lastRef = useRef(-1); // last poem told, so the next telling is a new one
   const touchRef = useRef(false);
+  const mountedRef = useRef(false);
   const sheetRef = useRef(null);
   const bodyRef = useRef(null);
 
   useEffect(() => {
     if (!open) {
-      // let the ink fade with the rolling scroll before forgetting the poem
-      const t = setTimeout(() => setPoem(null), 500);
+      // let the scroll finish rolling up before forgetting the poem
+      const t = setTimeout(() => setPoem(null), ROLL_MS);
       return () => clearTimeout(t);
     }
     let idx = Math.floor(Math.random() * POEMS.length);
@@ -63,6 +70,17 @@ export default function StorytellingSpecimen({ plate, alt }) {
     setCqw(START_CQW);
     setPoem(POEMS[idx]);
     return undefined;
+  }, [open]);
+
+  // the roll shadow travels only while the scroll is actually moving
+  useEffect(() => {
+    if (!mountedRef.current) {
+      mountedRef.current = true;
+      return undefined;
+    }
+    setRolling(true);
+    const t = setTimeout(() => setRolling(false), ROLL_MS);
+    return () => clearTimeout(t);
   }, [open]);
 
   // fit the telling to the sheet: shrink the ink until every word of the
@@ -104,29 +122,47 @@ export default function StorytellingSpecimen({ plate, alt }) {
         className="relative w-full cursor-pointer select-none [container-type:inline-size]"
       >
         <Image src={plate} alt={alt} fittingType="fit" className="h-auto w-full" />
-        <Image
-          src={DESK_OPEN}
-          alt=""
-          fittingType="fit"
+
+        {/* the unrolled plate, sweeping down out of the cylinder */}
+        <div
           aria-hidden={!open}
-          className={`absolute inset-0 h-auto w-full transition-opacity duration-500 ${
-            open ? "opacity-100" : "opacity-0"
-          }`}
+          className="absolute inset-0"
+          style={{
+            clipPath: open ? "inset(0% 0% 0% 0%)" : "inset(0% 0% 100% 0%)",
+            transition: `clip-path ${ROLL_MS}ms ${ROLL_EASE}`,
+          }}
+        >
+          <Image src={DESK_OPEN} alt="" fittingType="fit" className="h-auto w-full" />
+        </div>
+
+        {/* the shadow of the roll, riding its leading edge */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute left-0 w-full"
+          style={{
+            top: open ? "102%" : "-2%",
+            height: "4.5cqw",
+            transform: "translateY(-50%)",
+            background:
+              "linear-gradient(rgba(56,34,10,0.30), rgba(56,34,10,0.12) 55%, rgba(56,34,10,0))",
+            opacity: rolling ? 1 : 0,
+            transition: `top ${ROLL_MS}ms ${ROLL_EASE}, opacity 200ms ease`,
+          }}
         />
 
-        {/* the writing on the sheet — rotated with the parchment, blended into it */}
+        {/* the writing on the sheet, blended into the parchment */}
         <div
           aria-live="polite"
-          className={`absolute transition-opacity duration-500 ${
-            open ? "opacity-100" : "opacity-0"
-          }`}
+          className="absolute"
           style={{
             left: `${SHEET[0] * 100}%`,
             top: `${SHEET[1] * 100}%`,
             width: `${(SHEET[2] - SHEET[0]) * 100}%`,
             height: `${(SHEET[3] - SHEET[1]) * 100}%`,
-            transform: `rotate(${SHEET_ROT}deg)`,
             mixBlendMode: "multiply",
+            opacity: open ? 1 : 0,
+            clipPath: open ? "inset(-25% -25% 0% -25%)" : "inset(-25% -25% 125% -25%)",
+            transition: `clip-path ${ROLL_MS}ms ${ROLL_EASE}, opacity 300ms ease`,
           }}
         >
           <div
@@ -142,6 +178,7 @@ export default function StorytellingSpecimen({ plate, alt }) {
                     style={{
                       fontSize: `${cqw * 1.14}cqw`,
                       lineHeight: 1.2,
+                      animationDelay: `${INK_START_MS}ms`,
                       animationDuration: "1.6s",
                       "--ink": 0.92,
                     }}
@@ -162,7 +199,7 @@ export default function StorytellingSpecimen({ plate, alt }) {
                         key={i}
                         className="ink-word"
                         style={{
-                          animationDelay: `${150 + n * WORD_MS}ms`,
+                          animationDelay: `${INK_START_MS + n * WORD_MS}ms`,
                           "--jr": `${(rand(n) - 0.5) * 1.1}deg`,
                           "--ink": 0.78 + rand(n + 1000) * 0.16,
                         }}
