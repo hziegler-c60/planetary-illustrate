@@ -11,14 +11,14 @@ const DESIGNS = [1, 2, 3, 1, 2, 3, 1, 2].map(
 // each paper's resting place in the pile, as x, y of the plate plus its
 // slight resting tilt — a real stack is never quite squared away
 export const PILE = [
-  { x: 0.318, y: 0.108, r: -4.5 },
-  { x: 0.326, y: 0.104, r: 3.0 },
-  { x: 0.314, y: 0.112, r: -1.8 },
-  { x: 0.328, y: 0.106, r: 5.2 },
-  { x: 0.32, y: 0.102, r: -3.4 },
-  { x: 0.324, y: 0.11, r: 2.0 },
-  { x: 0.312, y: 0.105, r: -5.5 },
-  { x: 0.327, y: 0.109, r: 4.0 },
+  { x: 0.348, y: 0.298, r: -4.5 },
+  { x: 0.356, y: 0.294, r: 3.0 },
+  { x: 0.344, y: 0.302, r: -1.8 },
+  { x: 0.358, y: 0.296, r: 5.2 },
+  { x: 0.35, y: 0.292, r: -3.4 },
+  { x: 0.354, y: 0.3, r: 2.0 },
+  { x: 0.342, y: 0.295, r: -5.5 },
+  { x: 0.357, y: 0.299, r: 4.0 },
 ];
 
 export const PAPERS = DESIGNS.map((src, i) => ({ src, ...PILE[i] }));
@@ -27,4 +27,4 @@ export const PAPERS = DESIGNS.map((src, i) => ({ src, ...PILE[i] }));
 export const PAPER_W = 0.3;
 
 // the desktop region the papers scatter across, as x0, y0, x1, y1 of the plate
-export const SCATTER_BOX = { x0: 0.04, y0: 0.04, x1: 0.62, y1: 0.26 };
+export const SCATTER_BOX = { x0: 0.04, y0: 0.05, x1: 0.62, y1: 0.58 };
