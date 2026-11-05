@@ -86,7 +86,7 @@ export default function GiftDetail() {
                 />
               </div>
             ) : gift.id === "organization" ? (
-              <div className="w-full max-w-[420px]">
+              <div className="w-full max-w-[560px]">
                 <OrganizationSpecimen
                   plate={gift.image}
                   alt={`Scientific specimen illustrating ${gift.name}: ${gift.specimen}`}

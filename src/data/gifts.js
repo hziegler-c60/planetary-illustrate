@@ -78,11 +78,9 @@ export const gifts = [
   {
     id: "organization",
     name: "Organization",
-    specimen: "Antique card-catalog drawer",
+    specimen: "Writing desk with a stack of papers",
     image:
-      `${import.meta.env.BASE_URL}plates/catalogue-cutout.png`,
-    // the artwork carries no paper of its own, so it lies straight on the page
-    cutout: true,
+      `${import.meta.env.BASE_URL}plates/organization-desk.png`,
     jobs: ["Information Architect", "Metadata & Cataloging Librarian"],
     actions: [
       "Put one thing back where it belongs.",
