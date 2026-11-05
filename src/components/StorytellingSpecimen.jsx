@@ -42,10 +42,10 @@ const rand = (n) => {
 // line break exactly as written
 const tokenize = (text) => text.split(/(\s+)/);
 
-// the writing starts at reading size and steps down until the whole poem
-// rests on the parchment at once — nothing scrolls, nothing spills
+// the writing starts large and steps down only until it is comfortable to
+// read — never smaller than that, even if a long poem runs off the sheet
 const START_CQW = 3;
-const MIN_CQW = 1.0;
+const MIN_CQW = 2.2;
 const STEP_CQW = 0.15;
 
 const clamp01 = (v) => Math.min(1, Math.max(0, v));
