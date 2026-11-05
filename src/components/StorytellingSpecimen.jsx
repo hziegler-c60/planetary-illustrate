@@ -168,24 +168,15 @@ export default function StorytellingSpecimen({ plate, alt }) {
         tabIndex={0}
         aria-label={`${alt} — pull the scroll down to read a poem`}
         aria-expanded={open}
-        onPointerMove={(e) => {
-          // no clicking: the roll simply follows the cursor down the desk
-          if (e.pointerType === "touch" || dragRef.current || open) return;
-          if (!plateRef.current) return;
-          const rect = plateRef.current.getBoundingClientRect();
-          const frac = (e.clientY - rect.top) / rect.height;
-          const p = clamp01((frac - SCROLL.restTop - rh / 2) / SCROLL.travel);
-          cancelAnimationFrame(rafRef.current);
-          setP(p);
-          if (p >= INK_THRESHOLD) {
-            setOpen(true);
-            animateTo(1);
-          }
+        onPointerEnter={(e) => {
+          // no clicking, no tracking: cross onto the desk and the scroll
+          // unrolls itself; step off and it rolls back up
+          if (e.pointerType === "touch" || dragRef.current) return;
+          settle(1);
         }}
         onPointerLeave={(e) => {
           if (e.pointerType === "touch" || dragRef.current) return;
-          setOpen(false);
-          animateTo(0);
+          settle(0);
         }}
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") {
@@ -237,21 +228,21 @@ export default function StorytellingSpecimen({ plate, alt }) {
               <div key={`${lastRef.current}-${poem.title}`} ref={bodyRef}>
                 <p className="mb-[0.6cqw] text-center">
                   <span
-                    className="ink-word font-[var(--font-label)] text-[#4a3416]"
+                    className="ink-word font-[var(--font-label)] text-[#2f1f0b]"
                     style={{
                       fontSize: `${cqw * 1.14}cqw`,
                       lineHeight: 1.2,
                       animationDelay: `${INK_START_MS}ms`,
                       animationDuration: "1.6s",
-                      "--ink": 0.92,
+                      "--ink": 0.98,
                     }}
                   >
                     {poem.title}
                   </span>
                 </p>
                 <p
-                  className="whitespace-pre-wrap font-[var(--font-body)] italic text-[#4a3416]"
-                  style={{ fontSize: `${cqw}cqw`, lineHeight: 1.32 }}
+                  className="whitespace-pre-wrap font-[var(--font-body)] italic text-[#2f1f0b]"
+                  style={{ fontSize: `${cqw}cqw`, lineHeight: 1.26 }}
                 >
                   {tokenize(poem.text).map((tok, i) => {
                     if (/^\s+$/.test(tok)) return tok;
@@ -264,7 +255,7 @@ export default function StorytellingSpecimen({ plate, alt }) {
                         style={{
                           animationDelay: `${INK_START_MS + n * WORD_MS}ms`,
                           "--jr": `${(rand(n) - 0.5) * 1.1}deg`,
-                          "--ink": 0.78 + rand(n + 1000) * 0.16,
+                          "--ink": 0.86 + rand(n + 1000) * 0.14,
                         }}
                       >
                         {tok}
@@ -299,7 +290,7 @@ export default function StorytellingSpecimen({ plate, alt }) {
         />
       </div>
       <p className="mt-2 text-center font-[var(--font-body)] text-[11px] italic text-[#5a5148]/70">
-        Run your cursor down the scroll — a poem surfaces like invisible ink.
+        Hover over the desk — the scroll unrolls and a poem surfaces like invisible ink.
       </p>
     </div>
   );
