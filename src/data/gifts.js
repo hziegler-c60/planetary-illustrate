@@ -49,7 +49,7 @@ export const gifts = [
       `${import.meta.env.BASE_URL}plates/observation-animal-plate.png`,
     // the artwork carries no paper of its own, so it lies straight on the page
     cutout: true,
-    jobs: ["UX Researcher", "Archivist"],
+    jobs: ["Museum Registrar", "Archivist"],
     actions: [
       "Draw one thing you saw today from memory, then check it against the real thing.",
       "Pick one object you use daily and find three details you had never noticed about it.",
@@ -61,9 +61,9 @@ export const gifts = [
   {
     id: "storytelling",
     name: "Storytelling",
-    specimen: "Quill, inkwell & oil lantern",
+    specimen: "Writing desk with scroll, quill & ink",
     image:
-      `${import.meta.env.BASE_URL}plates/storytelling-cutout.png`,
+      `${import.meta.env.BASE_URL}plates/storytelling-desk.png`,
     // the artwork carries no paper of its own, so it lies straight on the page
     cutout: true,
     jobs: ["Data Visualization Developer", "Digital Collections Curator"],
