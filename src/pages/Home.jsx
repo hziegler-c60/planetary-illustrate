@@ -15,11 +15,11 @@ const LABELS = [
   { x: 34, y: 49 }, // Organization — left
 ];
 
-// Dictionary entry for the word, and Ruskin on why seeing plainly and handing
-// it on is the vocation — the note on why it is a planetary responsibility.
-function Definition() {
+// Dictionary entry for the word — rides up with the header, like an
+// engraving's own title inscription.
+function DictEntry() {
   return (
-    <div className="mx-auto mt-8 max-w-md text-center">
+    <div className="mx-auto max-w-md text-center">
       <p className="font-[var(--font-label)] text-[16px] tracking-wide text-[#2D2D2D]">
         il·lus·trate{" "}
         <span className="font-[var(--font-body)] text-[12px] text-[#8B4513]/90">/ɪˈlʌs.treɪt/</span>{" "}
@@ -29,6 +29,15 @@ function Definition() {
         1. to throw light upon; to make clear by example. 2. to furnish with pictures;
         to adorn with figures. — from Latin <span className="italic">illustrare</span>, “to light up.”
       </p>
+    </div>
+  );
+}
+
+// Ruskin on why seeing plainly and handing it on is the vocation —
+// the note on why it is a planetary responsibility.
+function Ruskin() {
+  return (
+    <div className="mx-auto mt-8 max-w-md text-center">
       <div className="mx-auto my-4 h-px w-16 bg-[#8B4513]/40" />
       <blockquote className="mx-auto max-w-lg">
         <p className="font-[var(--font-body)] text-[13px] italic leading-relaxed text-[#5a5148]/95">
@@ -53,14 +62,21 @@ export default function Home() {
       <AlmondClip />
       {/* Desktop / tablet — word integrated with a large 3D eye */}
       <div className="relative hidden w-full max-w-[720px] md:block">
-        <h1
-          className="pointer-events-none absolute left-1/2 top-[1%] z-20 -translate-x-1/2 text-center leading-none text-[#2D2D2D]"
-          style={{ fontFamily: "var(--font-script)", fontSize: "min(11vw, 72px)" }}
-        >
-          {PROJECT_WORD}
-        </h1>
+        {/* the title and its dictionary entry, set above the plate like an
+            inscription; the eye sits a touch lower to give them room */}
+        <div className="relative z-20">
+          <h1
+            className="text-center leading-none text-[#2D2D2D]"
+            style={{ fontFamily: "var(--font-script)", fontSize: "min(11vw, 72px)" }}
+          >
+            {PROJECT_WORD}
+          </h1>
+          <div className="mt-1">
+            <DictEntry />
+          </div>
+        </div>
 
-        <div className="relative aspect-square w-full">
+        <div className="relative -mt-[2%] aspect-square w-full">
           {/* the 3D eyeball — stays centred, rotates to track the cursor */}
           <Eye3D />
           {/* the eyelid — static outer layer framing the opening */}
@@ -102,7 +118,7 @@ export default function Home() {
             Select a faculty to examine its specimen, the vocations it serves, and the daily practices by which it is strengthened.
           </p>
 
-          <Definition />
+          <Ruskin />
         </div>
       </div>
 
@@ -114,7 +130,8 @@ export default function Home() {
         >
           {PROJECT_WORD}
         </h1>
-        <div className="relative aspect-square w-full">
+        <DictEntry />
+        <div className="relative mt-2 aspect-square w-full">
           <Eye3D />
           <Eyelid />
         </div>
@@ -142,7 +159,7 @@ export default function Home() {
           Select a faculty to examine its specimen, the vocations it serves, and the daily practices by which it is strengthened.
         </p>
 
-        <Definition />
+        <Ruskin />
       </div>
     </div>
   );
