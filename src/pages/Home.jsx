@@ -76,7 +76,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="relative -mt-[2%] aspect-square w-full">
+        <div className="relative -mt-[7%] aspect-square w-full">
           {/* the 3D eyeball — stays centred, rotates to track the cursor */}
           <Eye3D />
           {/* the eyelid — static outer layer framing the opening */}
