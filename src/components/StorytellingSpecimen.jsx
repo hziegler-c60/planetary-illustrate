@@ -168,6 +168,25 @@ export default function StorytellingSpecimen({ plate, alt }) {
         tabIndex={0}
         aria-label={`${alt} — pull the scroll down to read a poem`}
         aria-expanded={open}
+        onPointerMove={(e) => {
+          // no clicking: the roll simply follows the cursor down the desk
+          if (e.pointerType === "touch" || dragRef.current || open) return;
+          if (!plateRef.current) return;
+          const rect = plateRef.current.getBoundingClientRect();
+          const frac = (e.clientY - rect.top) / rect.height;
+          const p = clamp01((frac - SCROLL.restTop - rh / 2) / SCROLL.travel);
+          cancelAnimationFrame(rafRef.current);
+          setP(p);
+          if (p >= INK_THRESHOLD) {
+            setOpen(true);
+            animateTo(1);
+          }
+        }}
+        onPointerLeave={(e) => {
+          if (e.pointerType === "touch" || dragRef.current) return;
+          setOpen(false);
+          animateTo(0);
+        }}
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") {
             e.preventDefault();
@@ -280,7 +299,7 @@ export default function StorytellingSpecimen({ plate, alt }) {
         />
       </div>
       <p className="mt-2 text-center font-[var(--font-body)] text-[11px] italic text-[#5a5148]/70">
-        Pull the scroll down — a poem surfaces like invisible ink.
+        Run your cursor down the scroll — a poem surfaces like invisible ink.
       </p>
     </div>
   );
