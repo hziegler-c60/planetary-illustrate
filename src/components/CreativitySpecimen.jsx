@@ -7,12 +7,14 @@ import { BRUSH, BRUSH_TIP, CANVAS, PAINT, PALETTE, WELLS } from "@/data/creativi
 // Passing the brush over a dab on the palette loads it with that dab's colour —
 // a spot of the colour rides beside the bristles so you can see what it carries —
 // and the loaded colour is what it lays on the sheet of the easel. Dab the brush
-// back in the wells and it leaves a little paint there too. Leave the plate, and
-// the paint dries off.
+// back in the wells and it leaves a little paint there too. The paint stays on
+// for forty-five seconds from the first dab — the clock keeps running while you
+// paint, it never resets — then it fades away.
 const SPACING = 3; // px between dabs
 const SHEET_DAB = 0.014; // dab radius on the sheet, of the plate's width
 const WELLS_DAB = 0.009; // dab radius in the palette's wells
-const DRY = 520; // ms before the dried paint is wiped away
+const HOLD = 45000; // ms the paint stays before it starts to fade
+const DRY = 520; // ms before the faded paint is wiped away
 
 export default function CreativitySpecimen({ plate, alt }) {
   const boxRef = useRef(null);
@@ -22,7 +24,8 @@ export default function CreativitySpecimen({ plate, alt }) {
   const dotRef = useRef(null);
   const lastRef = useRef(null);
   const regionRef = useRef(null);
-  const timersRef = useRef({});
+  const holdTimersRef = useRef({});
+  const wipeTimersRef = useRef({});
   const colorRef = useRef(PAINT);
 
   const layerOf = (region) => (region === "sheet" ? sheetRef.current : wellsRef.current);
@@ -56,31 +59,50 @@ export default function CreativitySpecimen({ plate, alt }) {
     observer.observe(box);
     return () => {
       observer.disconnect();
-      clearTimeout(timersRef.current.sheet);
-      clearTimeout(timersRef.current.wells);
+      clearTimeout(holdTimersRef.current.sheet);
+      clearTimeout(holdTimersRef.current.wells);
+      clearTimeout(wipeTimersRef.current.sheet);
+      clearTimeout(wipeTimersRef.current.wells);
     };
   }, []);
 
-  // the paint fades off where the brush has left it, then the layer is wiped clean
-  const dry = (region) => {
+  // the paint fades off the layer, then the layer is wiped clean
+  const fade = (region) => {
     const layer = layerOf(region);
     if (!layer) return;
     layer.style.opacity = "0";
-    clearTimeout(timersRef.current[region]);
-    timersRef.current[region] = setTimeout(() => {
+    clearTimeout(wipeTimersRef.current[region]);
+    wipeTimersRef.current[region] = setTimeout(() => {
       const ctx = layer.getContext("2d");
       ctx.save();
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.clearRect(0, 0, layer.width, layer.height);
       ctx.restore();
       layer.style.opacity = "1";
+      // still painting here? the next stroke begins a fresh forty-five seconds
+      if (regionRef.current === region) {
+        holdTimersRef.current[region] = setTimeout(() => {
+          holdTimersRef.current[region] = null;
+          fade(region);
+        }, HOLD);
+      }
     }, DRY);
+  };
+
+  // the clock starts on the first dab and never resets while the brush keeps
+  // painting: HOLD ms after the start, the paint fades no matter what
+  const startHold = (region) => {
+    if (holdTimersRef.current[region]) return; // already counting
+    holdTimersRef.current[region] = setTimeout(() => {
+      holdTimersRef.current[region] = null;
+      fade(region);
+    }, HOLD);
   };
 
   const fresh = (region) => {
     const layer = layerOf(region);
     if (!layer) return;
-    clearTimeout(timersRef.current[region]);
+    clearTimeout(wipeTimersRef.current[region]);
     layer.style.opacity = "1";
   };
 
@@ -121,11 +143,12 @@ export default function CreativitySpecimen({ plate, alt }) {
     }
 
     if (regionRef.current !== region) {
-      const left = regionRef.current;
       regionRef.current = region;
       lastRef.current = null;
-      if (left) dry(left);
-      if (region) fresh(region);
+      if (region) {
+        fresh(region);
+        startHold(region);
+      }
     }
     if (!region) return;
 
@@ -145,10 +168,8 @@ export default function CreativitySpecimen({ plate, alt }) {
   const leavePlate = () => {
     if (brushRef.current) brushRef.current.style.opacity = "0";
     if (dotRef.current) dotRef.current.style.opacity = "0";
-    const left = regionRef.current;
     regionRef.current = null;
     lastRef.current = null;
-    if (left) dry(left);
   };
 
   return (

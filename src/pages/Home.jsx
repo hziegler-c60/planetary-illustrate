@@ -15,14 +15,14 @@ const LABELS = [
   { x: 34, y: 49 }, // Organization — left
 ];
 
-// Dictionary entry for the word, and a short note on why it is a planetary
-// responsibility (placeholder text, to be replaced by the author).
+// Dictionary entry for the word, and Ruskin on why seeing plainly and handing
+// it on is the vocation — the note on why it is a planetary responsibility.
 function Definition() {
   return (
     <div className="mx-auto mt-8 max-w-md text-center">
       <p className="font-[var(--font-label)] text-[16px] tracking-wide text-[#2D2D2D]">
         il·lus·trate{" "}
-        <span className="font-[var(--font-body)] text-[12px] text-[#8B4513]/80">/ɪˈlʌs.treɪt/</span>{" "}
+        <span className="font-[var(--font-body)] text-[12px] text-[#8B4513]/90">/ɪˈlʌs.treɪt/</span>{" "}
         <span className="font-[var(--font-body)] text-[12px] italic text-[#5a5148]">verb</span>
       </p>
       <p className="mt-2 font-[var(--font-body)] text-[13px] leading-relaxed text-[#5a5148]">
@@ -30,11 +30,17 @@ function Definition() {
         to adorn with figures. — from Latin <span className="italic">illustrare</span>, “to light up.”
       </p>
       <div className="mx-auto my-4 h-px w-16 bg-[#8B4513]/40" />
-      <p className="font-[var(--font-body)] text-[13px] italic leading-relaxed text-[#5a5148]/90">
-        And why it is a planetary responsibility: of all the ways a person can tend the
-        small plot of world entrusted to them, this is the one kept here — to look closely
-        at what is, and to hand it back as something others can see, too.
-      </p>
+      <blockquote className="mx-auto max-w-lg">
+        <p className="font-[var(--font-body)] text-[13px] italic leading-relaxed text-[#5a5148]/95">
+          “The greatest thing a human soul ever does in this world is to see something,
+          and tell what it saw in a plain way. Hundreds of people can talk for one who can
+          think, but thousands can think for one who can see. To see clearly is poetry,
+          prophecy, and religion, — all in one.”
+        </p>
+        <footer className="mt-2 font-[var(--font-body)] text-[11px] uppercase tracking-[0.2em] text-[#8B4513]/85">
+          John Ruskin — Modern Painters, Vol. III (1856)
+        </footer>
+      </blockquote>
     </div>
   );
 }
@@ -86,14 +92,18 @@ export default function Home() {
           </div>
         </div>
 
-        <p className="mt-1 text-center font-[var(--font-body)] text-[10px] uppercase tracking-[0.3em] text-[#8B4513]/70">
-          Fig. I — The Organ of Sight
-        </p>
-        <p className="mx-auto mt-2 max-w-md text-center font-[var(--font-body)] text-[12px] italic leading-relaxed text-[#5a5148]/80">
-          Select a faculty to examine its specimen, the vocations it serves, and the daily practices by which it is strengthened.
-        </p>
+        {/* the plate's caption, pulled up over the lower lid so it rests
+            just below the eye, like an engraving's own inscription */}
+        <div className="relative z-10 -mt-[22%]">
+          <p className="text-center font-[var(--font-body)] text-[10px] uppercase tracking-[0.3em] text-[#8B4513]/85">
+            Fig. I — The Organ of Sight
+          </p>
+          <p className="mx-auto mt-2 max-w-md text-center font-[var(--font-body)] text-[12px] italic leading-relaxed text-[#5a5148]/90">
+            Select a faculty to examine its specimen, the vocations it serves, and the daily practices by which it is strengthened.
+          </p>
 
-        <Definition />
+          <Definition />
+        </div>
       </div>
 
       {/* Mobile — stacked list */}
@@ -108,7 +118,7 @@ export default function Home() {
           <Eye3D />
           <Eyelid />
         </div>
-        <p className="mt-2 text-center font-[var(--font-body)] text-[10px] uppercase tracking-[0.3em] text-[#8B4513]/70">
+        <p className="mt-2 text-center font-[var(--font-body)] text-[10px] uppercase tracking-[0.3em] text-[#8B4513]/85">
           Fig. I — The Organ of Sight
         </p>
         <ul className="mt-4 space-y-3">
@@ -128,7 +138,7 @@ export default function Home() {
             </li>
           ))}
         </ul>
-        <p className="mx-auto mt-4 max-w-md text-center font-[var(--font-body)] text-[12px] italic leading-relaxed text-[#5a5148]/80">
+        <p className="mx-auto mt-4 max-w-md text-center font-[var(--font-body)] text-[12px] italic leading-relaxed text-[#5a5148]/90">
           Select a faculty to examine its specimen, the vocations it serves, and the daily practices by which it is strengthened.
         </p>
 
