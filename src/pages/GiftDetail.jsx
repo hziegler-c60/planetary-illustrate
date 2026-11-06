@@ -167,9 +167,6 @@ export default function GiftDetail() {
               <h2 className="font-[var(--font-label)] text-[13px] uppercase tracking-[0.3em] text-[#8B4513]">
                 Daily Practices
               </h2>
-              <p className="mt-1 font-[var(--font-body)] text-[11px] italic text-[#5a5148]/80">
-                Small, measurable, repeatable.
-              </p>
               <ol className="mt-4 space-y-3">
                 {gift.actions.map((action, i) => (
                   <li

@@ -1,5 +1,5 @@
 // The five gifts of "Illustrate" — a planetary responsibility.
-// Each gift carries two applicable vocations and five small, measurable practices.
+// Each gift carries two applicable vocations and five daily practices.
 
 export const CENTRAL_IMAGE =
   `${import.meta.env.BASE_URL}plates/cover.png`;
