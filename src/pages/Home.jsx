@@ -37,9 +37,9 @@ function DictEntry() {
 // the note on why it is a planetary responsibility.
 function Ruskin() {
   return (
-    <div className="mx-auto mt-8 max-w-md text-center">
+    <div className="mt-8 text-center">
       <div className="mx-auto my-4 h-px w-16 bg-[#8B4513]/40" />
-      <blockquote className="mx-auto max-w-lg">
+      <blockquote>
         <p className="font-[var(--font-body)] text-[13px] italic leading-relaxed text-[#5a5148]/95">
           “The greatest thing a human soul ever does in this world is to see something,
           and tell what it saw in a plain way. Hundreds of people can talk for one who can
@@ -110,11 +110,11 @@ export default function Home() {
 
         {/* the plate's caption, pulled up over the lower lid so it rests
             just below the eye, like an engraving's own inscription */}
-        <div className="relative z-10 -mt-[22%]">
+        <div className="relative z-10 -mt-[22%] px-12">
           <p className="text-center font-[var(--font-body)] text-[10px] uppercase tracking-[0.3em] text-[#8B4513]/85">
             Fig. I — The Organ of Sight
           </p>
-          <p className="mx-auto mt-2 max-w-md text-center font-[var(--font-body)] text-[12px] italic leading-relaxed text-[#5a5148]/90">
+          <p className="mt-2 text-center font-[var(--font-body)] text-[12px] italic leading-relaxed text-[#5a5148]/90">
             Select a faculty to examine its specimen, the vocations it serves, and the daily practices by which it is strengthened.
           </p>
 
