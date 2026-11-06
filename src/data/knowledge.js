@@ -18,29 +18,26 @@ export const PAGE_RIGHT = [0.545, 0.19, 0.895, 0.79];
 // text margins inside the leaf, as fractions of the leaf
 export const LEAF_TEXT = [0.088, 0.094, 0.912, 0.906];
 
-// the excerpt, four pages of it — the leaf carries 217 on its face and
-// 218 on its back; 219 waits underneath on the right for the turn
+// one continuous excerpt from the closing chapter, reading straight across
+// the four visible pages like a standard book — the leaf carries 217 on its
+// face and 218 on its back; 219 waits underneath on the right for the turn
 export const PAGES = {
   left: {
     num: "216",
     head: "ISAAC ASIMOV",
-    text: `In theory, up to 30 percent of the entire energy of a rotating black hole can be milked out of it by carefully sending objects through the stationary limit and collecting them on the way out — another way in which some advanced civilizations might use black holes as an energy source.
-
-Once all the rotational energy is gone, the black hole has only mass.`,
+    text: `The black hole formed by all the matter of the universe is 25,000,000,000 light-years across — and that happens to be about the diameter of the actual universe we live in, as far as we know.`,
   },
   leafFront: {
     num: "217",
     head: "THE COLLAPSING UNIVERSE",
-    text: `The black hole formed by all the matter of the universe is 25,000,000,000 light-years across, and that happens to be about the diameter of the actual universe we live in, as far as we know.
+    text: `It is quite possible, then, that the entire universe is itself a black hole, as has been suggested by the physicist Kip Thorne.
 
-It is quite possible, then, that the entire universe is itself a black hole, as has been suggested by the physicist Kip Thorne.`,
+If it is, then very likely it has always been a black hole and will always be a black hole.`,
   },
   leafBack: {
     num: "218",
     head: "ISAAC ASIMOV",
-    text: `If it is, then very likely it has always been a black hole and will always be a black hole.
-
-If that is so, we live within a black hole, and if we want to know what conditions are like in a black hole — provided it is extremely massive — we have but to look around.`,
+    text: `If that is so, we live within a black hole — and if we want to know what conditions are like in a black hole, provided it is extremely massive, we have but to look around.`,
   },
   right: {
     num: "219",
