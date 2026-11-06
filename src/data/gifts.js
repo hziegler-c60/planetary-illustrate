@@ -10,11 +10,9 @@ export const gifts = [
   {
     id: "knowledge",
     name: "Knowledge",
-    specimen: "Leather-bound reference volumes",
+    specimen: "Open book — The Collapsing Universe, by Isaac Asimov",
     image:
-      `${import.meta.env.BASE_URL}plates/knowledge-cutout.png`,
-    // the artwork carries no paper of its own, so it lies straight on the page
-    cutout: true,
+      `${import.meta.env.BASE_URL}plates/knowledge-book.png`,
     jobs: ["Data Analyst", "Reference Librarian"],
     actions: [
       "Verify one fact before you repeat it.",

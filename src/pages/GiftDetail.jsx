@@ -7,6 +7,7 @@ import ObservationSpecimen from "@/components/ObservationSpecimen";
 import CreativitySpecimen from "@/components/CreativitySpecimen";
 import OrganizationSpecimen from "@/components/OrganizationSpecimen";
 import StorytellingSpecimen from "@/components/StorytellingSpecimen";
+import KnowledgeSpecimen from "@/components/KnowledgeSpecimen";
 
 export default function GiftDetail() {
   const { giftId } = useParams();
@@ -95,6 +96,13 @@ export default function GiftDetail() {
             ) : gift.id === "storytelling" ? (
               <div className="w-full max-w-[740px]">
                 <StorytellingSpecimen
+                  plate={gift.image}
+                  alt={`Scientific specimen illustrating ${gift.name}: ${gift.specimen}`}
+                />
+              </div>
+            ) : gift.id === "knowledge" ? (
+              <div className="w-full max-w-[640px]">
+                <KnowledgeSpecimen
                   plate={gift.image}
                   alt={`Scientific specimen illustrating ${gift.name}: ${gift.specimen}`}
                 />
