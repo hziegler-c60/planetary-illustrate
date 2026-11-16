@@ -1,9 +1,5 @@
 # Planetary Illustrate
 
-A static, fully self-contained website — a faculty atlas of planetary
-responsibilities, built with React + Vite + Tailwind. No backend, no external
-services: every image ships in `public/plates/`, and the site runs entirely
-from this repository.
 
 ## Run locally
 
